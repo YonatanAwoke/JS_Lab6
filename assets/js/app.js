@@ -47,7 +47,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // createindex: 1) field name 2) keypath 3) options
         objectStore.createIndex('taskname', 'taskname', { unique: false });
-        objectStore.createIndex('date', 'date', { unique: false });
+        objectStore.createIndex('date', 'date', { unique: false },
+        console.log("created date index"));
 
         console.log('Database ready and fields created!');
     }
@@ -106,21 +107,22 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             sort_value = "prev"
         }
-        let index = objectStore.index("date");
-        index.openCursor(null, sort_value).onsuccess = function(e) {
+        
+        let object = objectStore.index("date");
+        object.openCursor(null, sort_value).onsuccess = function(e) {
             // assign the current cursor
             let cursor = e.target.result;
 
             if (cursor) {
 
                 // Create an li element when the user adds a task 
-                const li = document.createElement('li');
+                const list = document.createElement('li');
                 //add Attribute for delete 
-                li.setAttribute('data-task-id', cursor.value.id);
+                list.setAttribute('data-task-id', cursor.value.id);
                 // Adding a class
-                li.className = 'collection-item';
+                list.className = 'collection-item';
                 // Create text node and append it 
-                li.appendChild(document.createTextNode(cursor.value.taskname));
+                list.appendChild(document.createTextNode(cursor.value.taskname));
                 // Create new element for the link 
                 const link = document.createElement('a');
                 // Add class and the x marker for a 
@@ -130,11 +132,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 &nbsp;
                 <a href="/lab6/edit.html?id=${cursor.value.id}"><i class="fa fa-edit"></i> </a>
                 `;
-                li.dataset.date = cursor.value.date;
+                list.dataset.date = cursor.value.date;
                 // Append link to li
-                li.appendChild(link);
+                list.appendChild(link);
                 // Append to UL 
-                taskList.appendChild(li);
+                taskList.appendChild(list);
                 cursor.continue();
             }
         }
